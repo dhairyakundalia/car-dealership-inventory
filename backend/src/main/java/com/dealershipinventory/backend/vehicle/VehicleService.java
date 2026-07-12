@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.dealershipinventory.backend.exception.InsufficientStockException;
 import com.dealershipinventory.backend.exception.ResourceNotFoundException;
 import com.dealershipinventory.backend.vehicle.dto.VehicleRequest;
 import com.dealershipinventory.backend.vehicle.dto.VehicleResponse;
@@ -79,6 +80,26 @@ public class VehicleService {
         Vehicle vehicle = findOrThrow(id);
         vehicleRepository.delete(vehicle);
         log.info("Vehicle deleted: id={}, make={}, model={}", id, vehicle.getMake(), vehicle.getModel());
+    }
+
+    public VehicleResponse purchaseVehicle(UUID id) {
+        Vehicle vehicle = findOrThrow(id);
+        if (vehicle.getQuantity() < 1) {
+            log.warn("Insufficient stock: vehicleId={}, available={}", id, vehicle.getQuantity());
+            throw new InsufficientStockException(id.toString(), 1, vehicle.getQuantity());
+        }
+        vehicle.setQuantity(vehicle.getQuantity() - 1);
+        Vehicle saved = vehicleRepository.save(vehicle);
+        log.info("Vehicle purchased: id={}, qty={}, remaining={}", id, 1, saved.getQuantity());
+        return toResponse(saved);
+    }
+
+    public VehicleResponse restockVehicle(UUID id) {
+        Vehicle vehicle = findOrThrow(id);
+        vehicle.setQuantity(vehicle.getQuantity() + 1);
+        Vehicle saved = vehicleRepository.save(vehicle);
+        log.info("Vehicle restocked: id={}, qty={}, new stock={}", id, 1, saved.getQuantity());
+        return toResponse(saved);
     }
 
     private Vehicle findOrThrow(UUID id) {
