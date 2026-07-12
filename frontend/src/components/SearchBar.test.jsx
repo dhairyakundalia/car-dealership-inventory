@@ -5,9 +5,9 @@ import { SearchBar } from './SearchBar'
 describe('SearchBar', () => {
   it('renders all filter inputs', () => {
     render(<SearchBar onSearch={vi.fn()} />)
-    expect(screen.getByPlaceholderText(/make/i)).toBeInTheDocument()
-    expect(screen.getByPlaceholderText(/model/i)).toBeInTheDocument()
-    expect(screen.getByPlaceholderText(/category/i)).toBeInTheDocument()
+    expect(screen.getByText('Make')).toBeInTheDocument()
+    expect(screen.getByText('Model')).toBeInTheDocument()
+    expect(screen.getByText('Category')).toBeInTheDocument()
   })
 
   it('calls onSearch with filter values on submit', async () => {
@@ -15,7 +15,7 @@ describe('SearchBar', () => {
     const user = userEvent.setup()
     render(<SearchBar onSearch={onSearch} />)
 
-    await user.type(screen.getByPlaceholderText(/make/i), 'Toyota')
+    await user.type(screen.getByPlaceholderText(/toyota/i), 'Toyota')
     await user.click(screen.getByRole('button', { name: /search/i }))
 
     expect(onSearch).toHaveBeenCalledWith({ make: 'Toyota', model: '', category: '' })
@@ -26,7 +26,8 @@ describe('SearchBar', () => {
     const user = userEvent.setup()
     render(<SearchBar onSearch={onSearch} />)
 
-    await user.type(screen.getByPlaceholderText(/make/i), 'Toyota')
+    const makeInput = screen.getByPlaceholderText(/toyota/i)
+    await user.type(makeInput, 'Toyota')
     await user.click(screen.getByRole('button', { name: /clear/i }))
 
     expect(onSearch).toHaveBeenCalledWith({ make: '', model: '', category: '' })

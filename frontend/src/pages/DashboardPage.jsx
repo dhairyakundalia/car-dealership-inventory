@@ -1,10 +1,14 @@
 import { useState, useEffect, useCallback } from 'react'
+import { Link } from 'react-router'
 import { vehicleApi } from '@/api/vehicleApi'
 import { VehicleCard } from '@/components/VehicleCard'
 import { SearchBar } from '@/components/SearchBar'
+import { useAuth } from '@/hooks/useAuth'
+import { Button } from '@/components/ui/button'
 import Navbar from '@/components/Navbar'
 
 export default function DashboardPage() {
+  const { isAdmin } = useAuth()
   const [vehicles, setVehicles] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -40,9 +44,16 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950 dark:to-indigo-950">
       <Navbar />
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">Inventory</h1>
-          <p className="text-muted-foreground mt-1">Browse and purchase available vehicles</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Inventory</h1>
+            <p className="text-muted-foreground mt-1">Browse and purchase available vehicles</p>
+          </div>
+          {isAdmin && (
+            <Link to="/admin">
+              <Button variant="outline">Admin Panel</Button>
+            </Link>
+          )}
         </div>
 
         <div className="mb-8">
@@ -50,9 +61,27 @@ export default function DashboardPage() {
         </div>
 
         {loading ? (
-          <p className="text-muted-foreground text-center py-12">Loading vehicles...</p>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="rounded-2xl border bg-card p-6 space-y-4 animate-pulse">
+                <div className="flex justify-between">
+                  <div className="space-y-2">
+                    <div className="h-5 w-32 rounded bg-muted" />
+                    <div className="h-4 w-20 rounded bg-muted" />
+                  </div>
+                  <div className="h-6 w-24 rounded-full bg-muted" />
+                </div>
+                <div className="h-8 w-28 rounded bg-muted" />
+                <div className="h-10 rounded bg-muted" />
+              </div>
+            ))}
+          </div>
         ) : vehicles.length === 0 ? (
-          <p className="text-muted-foreground text-center py-12">No vehicles found.</p>
+          <div className="text-center py-16">
+            <p className="text-4xl mb-3 text-muted-foreground/40">&#x1F50D;</p>
+            <p className="text-lg font-medium text-muted-foreground">No vehicles found</p>
+            <p className="text-sm text-muted-foreground/60 mt-1">Try adjusting your search or add a new vehicle.</p>
+          </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {vehicles.map((v) => (
