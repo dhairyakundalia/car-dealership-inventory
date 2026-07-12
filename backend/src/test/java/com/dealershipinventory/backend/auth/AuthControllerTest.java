@@ -50,7 +50,7 @@ class AuthControllerTest {
     void register_WithValidData_ShouldReturn201() throws Exception {
         RegisterRequest request = new RegisterRequest("user@example.com", "password123");
         AuthResponse response = new AuthResponse("token", "user@example.com", "ROLE_USER");
-        when(authService.register(any())).thenReturn(response);
+        when(authService.register(any(RegisterRequest.class))).thenReturn(response);
 
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -75,7 +75,7 @@ class AuthControllerTest {
     void login_WithValidCredentials_ShouldReturn200() throws Exception {
         LoginRequest request = new LoginRequest("user@example.com", "password123");
         AuthResponse response = new AuthResponse("token", "user@example.com", "ROLE_USER");
-        when(authService.login(any())).thenReturn(response);
+        when(authService.login(any(LoginRequest.class))).thenReturn(response);
 
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)

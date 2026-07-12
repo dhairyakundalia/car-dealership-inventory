@@ -2,8 +2,6 @@ package com.dealershipinventory.backend.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -19,6 +17,7 @@ import com.dealershipinventory.backend.auth.dto.AuthResponse;
 import com.dealershipinventory.backend.auth.dto.LoginRequest;
 import com.dealershipinventory.backend.auth.dto.RegisterRequest;
 import com.dealershipinventory.backend.exception.DuplicateResourceException;
+import com.dealershipinventory.backend.exception.InvalidCredentialException;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -92,6 +91,6 @@ class AuthServiceTest {
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("wrongPass", "encodedPass")).thenReturn(false);
 
-        assertThrows(RuntimeException.class, () -> authService.login(request));
+        assertThrows(InvalidCredentialException.class, () -> authService.login(request));
     }
 }

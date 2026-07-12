@@ -1,7 +1,6 @@
 package com.dealershipinventory.backend.exception;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +43,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
         List<String> details = ex.getBindingResult().getFieldErrors().stream()
             .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
-            .collect(Collectors.toList());
+            .toList();
         log.warn("Validation failed: {}", details);
         return buildResponse(HttpStatus.BAD_REQUEST, "Bad Request", "Validation failed", details);
     }

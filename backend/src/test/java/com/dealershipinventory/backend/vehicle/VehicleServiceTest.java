@@ -90,6 +90,7 @@ class VehicleServiceTest {
             () -> vehicleService.getVehicleById(vehicleId));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void searchVehicles_WithFilters_ShouldReturnFilteredList() {
         when(vehicleRepository.findAll(any(Specification.class)))
