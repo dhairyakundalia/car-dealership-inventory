@@ -71,4 +71,18 @@ public class VehicleController {
         log.info("Vehicle deleted via API: id={}", id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{id}/purchase")
+    public ResponseEntity<VehicleResponse> purchaseVehicle(@PathVariable UUID id) {
+        VehicleResponse response = vehicleService.purchaseVehicle(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{id}/restock")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<VehicleResponse> restockVehicle(@PathVariable UUID id) {
+        VehicleResponse response = vehicleService.restockVehicle(id);
+        log.info("Vehicle restocked via API: id={}", id);
+        return ResponseEntity.ok(response);
+    }
 }

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import org.springframework.data.jpa.domain.Specification;
 
-@SuppressWarnings("unused")
+
 public class VehicleSpecification {
 
     public static Specification<Vehicle> hasMake(String make) {

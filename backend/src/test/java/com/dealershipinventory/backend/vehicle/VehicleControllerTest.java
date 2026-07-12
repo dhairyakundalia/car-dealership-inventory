@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.dealershipinventory.backend.auth.JwtService;
 import com.dealershipinventory.backend.config.SecurityConfig;
 import com.dealershipinventory.backend.config.UserDetailsServiceImpl;
+import com.dealershipinventory.backend.exception.InsufficientStockException;
 import com.dealershipinventory.backend.vehicle.dto.VehicleRequest;
 import com.dealershipinventory.backend.vehicle.dto.VehicleResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -129,6 +130,46 @@ class VehicleControllerTest {
     @WithMockUser(roles = "USER")
     void deleteVehicle_AsUser_ShouldReturn403() throws Exception {
         mockMvc.perform(delete("/api/vehicles/" + vehicleId))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser
+    void purchase_WithStock_ShouldReturn200() throws Exception {
+        when(vehicleService.purchaseVehicle(vehicleId)).thenReturn(vehicleResponse);
+
+        mockMvc.perform(post("/api/vehicles/" + vehicleId + "/purchase"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.quantity").value(10));
+    }
+
+    @Test
+    @WithMockUser
+    void purchase_WithoutStock_ShouldReturn409() throws Exception {
+        when(vehicleService.purchaseVehicle(vehicleId))
+            .thenThrow(new InsufficientStockException(vehicleId.toString(), 1, 0));
+
+        mockMvc.perform(post("/api/vehicles/" + vehicleId + "/purchase"))
+            .andExpect(status().isConflict());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void restock_AsAdmin_ShouldReturn200() throws Exception {
+        VehicleResponse restocked = new VehicleResponse(
+            vehicleId, "Toyota", "Camry", "Sedan",
+            new BigDecimal("25000.00"), 11);
+        when(vehicleService.restockVehicle(vehicleId)).thenReturn(restocked);
+
+        mockMvc.perform(post("/api/vehicles/" + vehicleId + "/restock"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.quantity").value(11));
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    void restock_AsUser_ShouldReturn403() throws Exception {
+        mockMvc.perform(post("/api/vehicles/" + vehicleId + "/restock"))
             .andExpect(status().isForbidden());
     }
 }
