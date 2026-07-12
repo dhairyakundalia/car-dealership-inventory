@@ -1,8 +1,11 @@
 import { Routes, Route } from 'react-router'
 import { AuthProvider } from '@/context/AuthContext'
 import ProtectedRoute from '@/components/ProtectedRoute'
+import AdminRoute from '@/components/AdminRoute'
 import LoginPage from '@/pages/LoginPage'
 import RegisterPage from '@/pages/RegisterPage'
+import DashboardPage from '@/pages/DashboardPage'
+import AdminPage from '@/pages/AdminPage'
 
 export default function App() {
   return (
@@ -10,7 +13,8 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/" element={<ProtectedRoute><div className="p-8"><h1 className="text-2xl font-bold">Car Dealership Inventory</h1></div></ProtectedRoute>} />
+        <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute><AdminRoute><AdminPage /></AdminRoute></ProtectedRoute>} />
       </Routes>
     </AuthProvider>
   )
