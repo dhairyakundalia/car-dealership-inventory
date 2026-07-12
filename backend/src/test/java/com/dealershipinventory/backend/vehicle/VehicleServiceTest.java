@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.domain.Specification;
 
+import com.dealershipinventory.backend.exception.InsufficientStockException;
 import com.dealershipinventory.backend.exception.ResourceNotFoundException;
 import com.dealershipinventory.backend.vehicle.dto.VehicleRequest;
 import com.dealershipinventory.backend.vehicle.dto.VehicleResponse;
@@ -139,5 +140,42 @@ class VehicleServiceTest {
 
         assertThrows(ResourceNotFoundException.class,
             () -> vehicleService.deleteVehicle(vehicleId));
+    }
+
+    @Test
+    void purchaseVehicle_WithSufficientStock_ShouldDecrement() {
+        when(vehicleRepository.findById(vehicleId)).thenReturn(Optional.of(vehicle));
+        when(vehicleRepository.save(any(Vehicle.class))).thenAnswer(i -> i.getArgument(0));
+
+        VehicleResponse response = vehicleService.purchaseVehicle(vehicleId);
+
+        assertThat(response.quantity()).isEqualTo(9);
+    }
+
+    @Test
+    void purchaseVehicle_WithZeroStock_ShouldThrowException() {
+        vehicle.setQuantity(0);
+        when(vehicleRepository.findById(vehicleId)).thenReturn(Optional.of(vehicle));
+
+        assertThrows(InsufficientStockException.class,
+            () -> vehicleService.purchaseVehicle(vehicleId));
+    }
+
+    @Test
+    void restockVehicle_ShouldIncrementQuantity() {
+        when(vehicleRepository.findById(vehicleId)).thenReturn(Optional.of(vehicle));
+        when(vehicleRepository.save(any(Vehicle.class))).thenAnswer(i -> i.getArgument(0));
+
+        VehicleResponse response = vehicleService.restockVehicle(vehicleId);
+
+        assertThat(response.quantity()).isEqualTo(11);
+    }
+
+    @Test
+    void restockVehicle_WhenNotExists_ShouldThrow() {
+        when(vehicleRepository.findById(vehicleId)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class,
+            () -> vehicleService.restockVehicle(vehicleId));
     }
 }
