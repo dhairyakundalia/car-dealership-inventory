@@ -38,14 +38,14 @@ export default function RegisterPage() {
   const displayError = validationError || error
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Create Account</CardTitle>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950 dark:to-indigo-950 px-4 py-8">
+      <Card className="w-full max-w-md shadow-lg">
+        <CardHeader className="text-center pb-2">
+          <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
           <CardDescription>Sign up to get started</CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-5 pt-6">
             {displayError && (
               <Alert variant="destructive">
                 <AlertDescription>{displayError}</AlertDescription>
@@ -64,10 +64,10 @@ export default function RegisterPage() {
               <Input id="confirmPassword" type="password" placeholder="Confirm your password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
             </div>
           </CardContent>
-          <CardFooter className="flex flex-col gap-4">
-            <Button type="submit" className="w-full">Create Account</Button>
+          <CardFooter className="flex flex-col gap-4 pt-8 pb-6">
+            <Button type="submit" className="w-full h-11 text-base">Create Account</Button>
             <p className="text-sm text-muted-foreground">
-              Already have an account? <Link to="/login" className="text-primary hover:underline">Sign in</Link>
+              Already have an account? <Link to="/login" className="font-medium text-primary hover:underline">Sign in</Link>
             </p>
           </CardFooter>
         </form>

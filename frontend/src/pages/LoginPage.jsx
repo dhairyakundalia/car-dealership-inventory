@@ -23,14 +23,14 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Welcome Back</CardTitle>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950 dark:to-indigo-950 px-4 py-8">
+      <Card className="w-full max-w-md shadow-lg">
+        <CardHeader className="text-center pb-2">
+          <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
           <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-5 pt-6">
             {error && (
               <Alert variant="destructive">
                 <AlertDescription>{error}</AlertDescription>
@@ -45,10 +45,10 @@ export default function LoginPage() {
               <Input id="password" type="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
             </div>
           </CardContent>
-          <CardFooter className="flex flex-col gap-4">
-            <Button type="submit" className="w-full">Sign In</Button>
+          <CardFooter className="flex flex-col gap-4 pt-8 pb-6">
+            <Button type="submit" className="w-full h-11 text-base">Sign In</Button>
             <p className="text-sm text-muted-foreground">
-              Don&apos;t have an account? <Link to="/register" className="text-primary hover:underline">Register</Link>
+              Don&apos;t have an account? <Link to="/register" className="font-medium text-primary hover:underline">Register</Link>
             </p>
           </CardFooter>
         </form>
