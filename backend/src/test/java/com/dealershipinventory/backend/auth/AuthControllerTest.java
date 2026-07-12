@@ -20,6 +20,7 @@ import com.dealershipinventory.backend.auth.dto.AuthResponse;
 import com.dealershipinventory.backend.auth.dto.LoginRequest;
 import com.dealershipinventory.backend.auth.dto.RegisterRequest;
 import com.dealershipinventory.backend.config.SecurityConfig;
+import com.dealershipinventory.backend.config.UserDetailsServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(AuthController.class)
@@ -31,6 +32,12 @@ class AuthControllerTest {
 
     @MockitoBean
     private AuthService authService;
+
+    @MockitoBean
+    private JwtService jwtService;
+
+    @MockitoBean
+    private UserDetailsServiceImpl userDetailsService;
 
     private ObjectMapper objectMapper;
 
