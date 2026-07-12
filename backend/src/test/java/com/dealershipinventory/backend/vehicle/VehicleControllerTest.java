@@ -36,8 +36,7 @@ class VehicleControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @MockitoBean
     private VehicleService vehicleService;
@@ -69,14 +68,14 @@ class VehicleControllerTest {
     }
 
     @Test
-    void createVehicle_Unauthenticated_ShouldReturn401() throws Exception {
+    void createVehicle_Unauthenticated_ShouldReturn403() throws Exception {
         VehicleRequest request = new VehicleRequest("Toyota", "Camry", "Sedan",
             new BigDecimal("25000.00"), 10);
 
         mockMvc.perform(post("/api/vehicles")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-            .andExpect(status().isUnauthorized());
+            .andExpect(status().isForbidden());
     }
 
     @Test
