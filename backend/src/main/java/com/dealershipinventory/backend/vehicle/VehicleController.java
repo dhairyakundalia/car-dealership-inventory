@@ -46,11 +46,11 @@ public class VehicleController {
 
     @GetMapping("/search")
     public ResponseEntity<List<VehicleResponse>> searchVehicles(
-            @RequestParam(required = false) String make,
-            @RequestParam(required = false) String model,
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) BigDecimal minPrice,
-            @RequestParam(required = false) BigDecimal maxPrice) {
+            @RequestParam(name = "make", required = false) String make,
+            @RequestParam(name = "model", required = false) String model,
+            @RequestParam(name = "category", required = false) String category,
+            @RequestParam(name = "minPrice", required = false) BigDecimal minPrice,
+            @RequestParam(name = "maxPrice", required = false) BigDecimal maxPrice) {
         return ResponseEntity.ok(
             vehicleService.searchVehicles(make, model, category, minPrice, maxPrice));
     }
