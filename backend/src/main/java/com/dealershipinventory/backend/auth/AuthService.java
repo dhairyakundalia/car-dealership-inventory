@@ -7,6 +7,7 @@ import com.dealershipinventory.backend.auth.dto.AuthResponse;
 import com.dealershipinventory.backend.auth.dto.LoginRequest;
 import com.dealershipinventory.backend.auth.dto.RegisterRequest;
 import com.dealershipinventory.backend.exception.DuplicateResourceException;
+import com.dealershipinventory.backend.exception.InvalidCredentialException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,12 +43,12 @@ public class AuthService {
         User user = userRepository.findByEmail(request.email())
             .orElseThrow(() -> {
                 log.warn("Login failed for email={}", request.email());
-                return new RuntimeException("Invalid email or password");
+                return new InvalidCredentialException("Invalid email or password");
             });
 
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             log.warn("Login failed for email={}", request.email());
-            throw new RuntimeException("Invalid email or password");
+            throw new InvalidCredentialException("Invalid email or password");
         }
 
         String token = jwtService.generateToken(user.getEmail());

@@ -1,10 +1,10 @@
 package com.dealershipinventory.backend.exception;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -33,11 +33,17 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.CONFLICT, "Conflict", ex.getMessage());
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiErrorResponse> handleAccessDenied(AccessDeniedException ex) {
+        log.warn("Access denied: {}", ex.getMessage());
+        return buildResponse(HttpStatus.FORBIDDEN, "Forbidden", "Access denied");
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
         List<String> details = ex.getBindingResult().getFieldErrors().stream()
             .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
-            .collect(Collectors.toList());
+            .toList();
         log.warn("Validation failed: {}", details);
         return buildResponse(HttpStatus.BAD_REQUEST, "Bad Request", "Validation failed", details);
     }
